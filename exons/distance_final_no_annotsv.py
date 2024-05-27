@@ -1,9 +1,9 @@
 import csv
 
-#exons_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/exons/allhg19_formated.txt" #hg19/hg37 genome
-exons_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/exons/all_formated.txt" #hg38 genome
-MEs_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/Longreads_rMETL_final.csv" #Formated file after running format.py
-output_file = "exp_obs_gene_longread_rMETL.csv" #Name of the output file you want
+#exons_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/exons/allhg19_formated.txt"
+exons_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/exons/all_formated.txt"
+MEs_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/VH_WES_scramble_final.csv"
+output_file = "exp_obs_gene_VH_WES_scramble.csv"
 
 exons = {}
 with open(exons_file) as exon_list:
@@ -43,24 +43,20 @@ def near_exon(genes, ME_start, ME_end):
 
 with open(output_file, 'w', newline='') as output_csv:
     writer = csv.writer(output_csv)
-    writer.writerow(["Sample", "Chromosome", "ME_Start", "ME_End", "Distance_to_Exon", "Distance_Tag", "Gene", "Gene_AnnotSV", "Exon_Number","Coverage","Genotype"])
+    writer.writerow(["Sample", "Chromosome", "ME_Start", "ME_End", "Distance_to_Exon", "Distance_Tag", "Gene","Exon_Number"])
 
     with open(MEs_file) as ME_csv:
         reader = csv.reader(ME_csv)
         next(reader)
         for row in reader:
             sample = row[0]
-            gene = row[3]
-            ME_start = int(row[6])
-            ME_end = int(row[7])
-            chromosome = row[8]
-            #coverage = row[9]
-            genotype = row[9]
+            #gene = row[4]
+            ME_start = int(row[3])
+            ME_end = int(row[4])
+            chromosome = row[5]
 
             if chromosome in exons:
                 nearest_exon, distance_tag, nearest_distance = near_exon(exons[chromosome], ME_start, ME_end)
                 if nearest_exon:
                     gene_id, exon_start, exon_end, exon_number = nearest_exon
-                    writer.writerow([sample, chromosome, ME_start, ME_end, nearest_distance, distance_tag, gene_id, gene, exon_number, genotype])
-
-
+                    writer.writerow([sample, chromosome, ME_start, ME_end, nearest_distance, distance_tag, gene_id, exon_number])

@@ -3,13 +3,23 @@ Repository containing all the codes I used during the Curricular Internship + FD
 
 ## MELT/SCRAMble/mobster folders contents:
 
-### sh files
+The first we will find on each of these folders are the folders for each dataset that we ran with the corresponding tool. If you go inside each of them you will find the following programs:
 
-These files are the personalized shell scripts to run the tools for each dataset
+### .sh program
 
-### elements.py
+These files are the personalized bash scripts to run the tools for each dataset. Are personalized due to the fact that some of them weren't just performing a range from one number to another, but in some cases numbers were lacking or the pattern of the folder was different for each one. 
+
+### elements.py program
 
 ## exons folder contents:
+
+It contains three files:
+
+### format.py
+
+### distance.py
+
+### distance_no_annotsv.py
 
 ## genes folder contents:
 
