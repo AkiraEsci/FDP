@@ -2,7 +2,7 @@ import csv
 
 #exons_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/exons/allhg19_formated.txt" #hg19/hg37 genome
 exons_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/exons/all_formated.txt" #hg38 genome
-MEs_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/Longreads_rMETL_final.csv" #Formated file after running format.py
+MEs_file = "/gpfs42/projects/lab_genresearch/shared_data/ahirata/Longreads_rMETL_final.csv" #Formated file after running elements.py
 output_file = "exp_obs_gene_longread_rMETL.csv" #Name of the output file you want
 
 exons = {}
