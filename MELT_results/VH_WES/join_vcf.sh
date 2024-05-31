@@ -1,11 +1,21 @@
 #!/bin/bash
+patterns=("BQSR_S" "BQSR_VH" "BQSR_VH" "BQSR_VH")
+ranges=("58 59 60" "60 61 62 63" "71 72 73" "77 78 79")
 
-cd BQSR_$1
-cp Results_$2/$2.final_comp.vcf $2.vcf
-cp Results_$3/$3.final_comp.vcf $3.vcf
-cp Results_$4/$4.final_comp.vcf $4.vcf
-
-cat $2.vcf $3.vcf $4.vcf > MEfinal_$1.vcf
-
-cd ..
+for ((i=0; i<${#patterns[@]}; i++))
+do
+    pattern="${patterns[$i]}"
+    range="${ranges[$i]}"
+    
+    for j in $range
+    do  
+        cd ${pattern}${range}
+        cp Results_ALU/ALU.final_comp.vcf ALU.vcf
+        cp Results_LINE1/LINE1.final_comp.vcf LINE1.vcf
+        cp Results_SVA/SVA.final_comp.vcf SVA.vcf
+        cat ALU.vcf LINE1.vcf SVA.vcf > MEfinal_${pattern}${range}.vcf
+        echo "Done"
+        cd ..
+    done
+done
 

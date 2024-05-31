@@ -1,11 +1,16 @@
 #!/bin/bash
 
-cd BQSR_$1
-cp Results_$2/$2.final_comp.vcf $2.vcf
-cp Results_$3/$3.final_comp.vcf $3.vcf
-cp Results_$4/$4.final_comp.vcf $4.vcf
+for ((i=40;i<=55;i++))
+do
+    if [ $i -eq 41 ] || [ $i -eq 54 ] || [ $i -eq 55 ]; then
+        cd AY49$i
+        cp Results_ALU/ALU.final_comp.vcf ALU.vcf
+        cp Results_LINE1/LINE1.final_comp.vcf LINE1.vcf
+        cp Results_SVA/SVA.final_comp.vcf SVA.vcf
 
-cat $2.vcf $3.vcf $4.vcf > MEfinal_$1.vcf
-
-cd ..
+        cat ALU.vcf LINE1.vcf SVA.vcf > MEfinal_$i.vcf
+        echo "Done"
+        cd ..
+    fi
+done
 
