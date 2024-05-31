@@ -1,4 +1,4 @@
-# Final Degree Project Repository
+# Detection of Transposable Element Insertions from NGS data
 Repository containing all the codes I used during the Curricular Internship + FDP
 
 ## MELT/SCRAMble/mobster folders contents:
