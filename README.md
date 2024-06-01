@@ -1,8 +1,8 @@
-# Detection of Transposable Element Insertions from NGS data
+# Performance evaluation of bioinformatics tools for Transposable Element detection from NGS data
 
 Repository containing all the codes I used during the Curricular Internship + FDP
 
-## MELT/SCRAMble/mobster folders contents:
+## MELT/SCRAMble/mobster folders content:
 
 The first we will find on each of these folders are the folders for each dataset that we ran with the corresponding tool. If you go inside each of them you will find the following programs in common:
 
@@ -54,7 +54,7 @@ The programs used in this folder are already mentioned previously. But one progr
 ## RNA_seq content:
 
 
-## exons contents:
+## exons content:
 
 * `format.py` program
 
@@ -62,7 +62,7 @@ The programs used in this folder are already mentioned previously. But one progr
 
 * `distance_no_annotsv.py` program
 
-## genes contents:
+## genes content:
 
 It contains the genes.py program, which tell if the list of genes (AID,CVID and IEI)
 
