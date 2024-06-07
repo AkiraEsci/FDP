@@ -24,6 +24,8 @@ And the ones that are not common between them, as some differences while running
 
 * `melt.sh` program
 
+![MELT troubleshooting](./Images/melt_error.png)
+
 * `join_vcf.sh` program
 
 ### Only in SCRAMble:
@@ -39,6 +41,8 @@ And the ones that are not common between them, as some differences while running
 ### Only in mobster:
 
 * `scramble.sh` program
+
+![SCRAMble troubleshooting](./Images/scramble_error.png)
 
 * `file_format.py` program
 
@@ -59,6 +63,8 @@ The programs used in this folder are already mentioned previously. But one progr
 * `format.py` program
 
 * `distance.py` program
+
+![exons_distance pipeline](./Images/pipeline_exons.png)
 
 * `distance_no_annotsv.py` program
 
