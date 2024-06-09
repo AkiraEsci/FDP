@@ -1,16 +1,21 @@
 #!/usr/bin/bash
-#SBATCH --partition=haswell
-#SBATCH --cpus-per-task=1 
-#SBATCH --mem-per-cpu=64G 
 
-module load mobster/0.2.4.1-GCCcore-11.3.0
+module load rMETL/V1.0.4-Miniconda3-4.9.2
 
-export BAM="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/81260.haplotagged.bam";
-export SAMPLE="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/Final";
-export RESUL="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/mobster_res/81260.haplotagged.result";
-java -Xmx8G -jar $EBROOTMOBSTER/MobileInsertions-0.2.4.1.jar \
-            -properties /gpfs42/projects/lab_genresearch/shared_data/ahirata/mobster_results/Mobster.properties.hg38 \
-            -in $BAM\
-            -sn $SAMPLE \
-            -out $RESUL
+source activate rmetl
 
+export REFERENCE="/gpfs42/projects/lab_genresearch/shared_data/ahirata/Reference/GRCh38_full_analysis_set_plus_decoy_hla.fa";
+export OUT_DIR="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/rMETL_res";
+export INFILE="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/81260.haplotagged.bam";
+export TEMP_DIR="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/";
+
+rMETL detection $INFILE $REFERENCE $TEMP_DIR $OUT_DIR
+
+export FASTA="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/rMETL_res/potential_ME.fa";
+export MEREF="/gpfs42/projects/lab_genresearch/shared_data/ahirata/Reference/super_TE.fa";
+
+rMETL realignment $FASTA $MEREF $OUT_DIR
+
+export SAM="/gpfs42/projects/lab_genresearch/shared_data/ahirata/longReads_WGS_VH27i/rMETL_res/finalcluster.sam";
+
+rMETL calling $SAM $REFERENCE VCF $OUT_DIR

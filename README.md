@@ -197,6 +197,8 @@ We obtained a TXT file with the following information:
 
 * `convert_vcf.sh` program
 
+These scripts use a Java JAR file named MobsterVCF to convert Mobster predictions from text format to VCF format. The Mobster predictions may now be more easily analyzed and visualized later on thanks to this technique. It specifies the locations of the matching output VCF files and the input text files that include Mobster predictions. It converts the Mobster predictions to VCF format by running the Java command with the given JAR file and input/output file directories during each iteration.
+
 To run it:
 
 ```
@@ -216,6 +218,23 @@ The programs used in this folder are already mentioned previously, but one progr
 
 * `rMETL.sh` program
 
+The script runs the rMETL tool. The rMETL module is loaded first, and the rmetl environment is turned on. The reference genome, input BAM file, output directory, and temporary directory for intermediate files are among the important variables that are defined next.
+It uses the reference genome and the input BAM file to identify possible MEIs while it carries out the detection command. After the MEIs are found, they are realigned using the realignment command with a reference file that contains sequences of known mobile elements. By taking sequence variations into account, this phase improves the accuracy of MEI identification.
+Lastly, uses the calling command to perform MEI calling, producing a VCF file with the discovered MEIs. 
+
+To run it:
+
+```
+sbatch rmetl.sh
+```
+
+We obtained a VCF file with the following information:
+
+```
+> CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	None
+> chr1	12798634	0	A	<INS:ME:Alu>	.	PASS	PRECISE;SVTYPE=INS;SVLEN=325;END=12798958;SAMPLE=None;STRAND=+	GT:DV:DR	1/1:7:1
+```
+
 ## RNA_seq content:
 
 
@@ -223,9 +242,55 @@ The programs used in this folder are already mentioned previously, but one progr
 
 * `format.py` program
 
+The script works by parsing a file that contains the exons from the defined reference genome from the UCSC browser, reformatting the exon information, and writing it to a new file.
+The script divides the input file's lines into tab-delimited columns by iterating over each line. After being retrieved, the exon start and end positions are converted to integers and empty values are filtered out. Furthermore, the gene symbol is obtained. The script creates a new line for each exon entry that has the original columns, the exon identifier, the gene symbol, and the reformatted exon start and end positions. This is done in order to preserve the data for every exon that encodes a single gene.
+
+From:
+
+```
+> hg19.knownGene.name	hg19.knownGene.chrom	hg19.knownGene.strand	hg19.knownGene.txStart	hg19.knownGene.txEnd	hg19.knownGene.cdsStart	hg19.knownGene.cdsEnd	hg19.knownGene.exonCount	hg19.knownGene.exonStarts	hg19.knownGene.exonEnds	hg19.knownGene.proteinID	hg19.kgXref.geneSymbol
+> uc001aaa.3	chr1	+	11873	14409	11873	11873	3	11873,12612,13220,	12227,12721,14409,		DDX11L1
+```
+
+To:
+
+```
+> hg19.knownGene.name	hg19.knownGene.chrom	hg19.knownGene.strand	hg19.knownGene.txStart	hg19.knownGene.txEnd	hg19.knownGene.cdsStart	hg19.knownGene.cdsEnd	hg19.knownGene.exonCount	hg19.knownGene.exonStarts	hg19.knownGene.exonEnds	hg19.knownGene.proteinID	hg19.kgXref.geneSymbol
+> uc001aaa.3	chr1	+	11873	14409	11873	11873	3	11873	12227	DDX11L1	exon 1
+> uc001aaa.3	chr1	+	11873	14409	11873	11873	3	12612	12721	DDX11L1	exon 2
+> uc001aaa.3	chr1	+	11873	14409	11873	11873	3	13220	14409	DDX11L1	exon 3
+```
+
+To run it:
+
+```
+python3 format.py
+```
+
 * `distance.py` program
 
+The Python script, by using genomic coordinates, processes a set of MEIs and calculates how close they are to exons. The file paths for the output CSV file (output_file), the ME insertions file (MEs_file), and the exon list (exons_file) are defined first.
+Next, line by line, the script reads the exon list file, parses each line into a column, and extracts pertinent data. It adds this data, arranged by chromosomal, to the exons dictionary.
+There are two defined assistance functions: near_exon() finds the nearest exon to a given mobile element insertion based on distance, and distance() computes the distance between a location and an exon boundary.
+The output CSV file is opened for writing to start the main processing loop. Column names are written in a header row that is written.
+The ME insertions file is then opened, and each row is iterated over. It retrieves data for every ME insertion. Next, it determines whether the ME insertion chromosome is included in the exons lexicon. If so, it locates the closest exon and determines its distance using the near_exon() function. 
+Lastly, it adds pertinent data for additional analysis to the final CSV file. 
+
 ![exons_distance pipeline](./Images/pipeline_exons.png)
+
+To run it:
+
+```
+python3 distance.py
+```
+
+An example of the output CSV file:
+
+```
+>Sample,Chromosome,ME_Start,ME_End,Distance_to_Exon,Distance_Tag,Gene,Gene_AnnotSV,Exon_Number,Coverage,Genotype
+> 1,chr17,61565904,61565905,25,Close,ACE,ACE,exon 5,24,0/1
+> 1,chr17,61565904,61565905,25,Close,ACE,ACE,exon 5,24,0/1
+```
 
 * `distance_no_annotsv.py` program
 
@@ -233,15 +298,68 @@ Works the same way as the one with the annotations of AnnotSV but this time it d
 
 ## genes content:
 
-It contains the genes.py program, which tell if the list of genes (AID,CVID and IEI).
+* `format.py` program
+
+As we wanted to perform the comparisons of the candidate genes with the ones annotated we wanted them to be in a format to make the comparisons, a list, so we used this program to store in a list the candidate genes.
+
+To run it:
+
+```
+python3 format.py
+```
 
 * `genes.py` program
+
+The script creates a CSV file that includes pertinent data and a gene-name mapping. It begins by defining lists of genes linked to various immunological illnesses.
+It reads the matching CSV file from each tool iteration—in our case, from our exon distance program. It extracts data and determines whether the gene name is one of the genes linked to immunological illnesses for every line in the CSV file. If so, it adds pertinent details to the dictionary under the appropriate person's name.
+Lastly, it saves the gathered data to a CSV file, where each row includes information about a person's gene occurrence, including the chromosome and the instrument employed.
+
+To run it:
+
+```
+python3 genes.py
+```
+
+An example of the output CSV file:
+
+```
+> Individual,Gene_name,Distance,Distance_tag,Exon,Tool,Chromosome
+> 1,PLCG2,135,Near,exon 32,scramble,chr16
+> 10,PLCG2,135,Near,exon 32,scramble,chr16
+```
+
+* `ME_per_data.py` program
+
+In order to plot the amount of mobile elements per dataset we used to program to determine that information.
+
+To run it:
+
+```
+python3 ME_per_data.py
+```
 
 ## de_novo content:
 
 * `de_novo.py` program
 
+This Python program finds de novo mutations by analyzing gene expression data. It generates a CSV file with the identified de novo mutations after reading data from an input CSV file that contains gene expression data.
+To find de novo mutations, the check_gene_expression function analyzes the input data. Iteratively going through the data, it finds entire families (those whose samples have the labels 'i','m', and 'f' for individual, mother, and father, respectively). Next, it contrasts an individual's gene expression with that of their parents. A de novo mutation occurs when a gene expresses itself in the individual but not in either parent.
+
+To run it:
+
+```
+python3 de_novo.py
+```
+
+An example of the output CSV file:
+
+```
+
+```
+
 * `VH_format.py` program
+
+This program was meant to add a new column to the WES Vall d'Hebron, vice versa, in order to termine the tag from one to each other to perform the comparisons WES-WGS.
 
 ## Data_visualization content:
 
