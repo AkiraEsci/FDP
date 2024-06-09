@@ -80,21 +80,76 @@ And the ones that are not common between them:
 
 * `melt.sh` program
 
+The script is a bash program that uses the MELT software to automatically find TEs in genomic sequencing data. Some parameters that must be specified or modified are: the type of mobile element to identify (**the options are in the script**), the path to the reference genome and the reference mobile elements, the directory holding the MELT software, and the location to the BED file defining genomic regions of interest. The script also loads necessary packages and their specific version.
+
+To run it:
+
+```
+sbatch melt.sh
+```
+
+For each element we obtained a VCF file with the following information:
+
+```
+> CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	BQSR_S1
+> chr1	149218125	.	A	<INS:ME:ALU>	.	ac0;s25	TSD=null;ASSESS=2;INTERNAL=null,null;SVTYPE=ALU;SVLEN=278;MEINFO=AluY,2,280,+;DIFF=0.1:c32t,c37g,c48g,g65a,a74g,c78g,g110a;LP=1;RP=3;RA=-1.585;PRIOR=false;SR=0	GT:GL:DP:AD	./.:-0,-0,-0:1:0
+```
+
+Some errors that we found while trying to run the MELT tool and how to solve them:
+
 ![MELT troubleshooting](./Images/melt_error.png)
 
 * `join_vcf.sh` program
+
+These are bash scripts that navigates to the directory for each identifier, which contains the MELT's result files. The final VCF files produced by MELT are copied into distinct files within each directory. Then it concatenates the  VCF files into a single file to afterwards perform the annotation.
+
+To run it:
+
+```
+sbatch join_vcf.sh
+```
 
 ### Only in SCRAMble:
 
 * `scramble.sh` program
 
+These scripts are designed to use the SCRAMble tool to analyze deletions and TEs in genomic sequencing data across a range of samples. Important  variables are defined upon loading the SCRAMble module, which include the directory containing the SCRAMble binaries, the file containing the consensus sequences of mobile element insertions, the reference genome file, and the location of the SCRAMble.R script. 
+The cluster_identifier binary is run in order to create cluster files from input BAM files, a directory structure is created to hold the results, and a R script (SCRAMble.R) is called in order to assess MEIs and deletions based on the generated cluster files and reference resources. 
+
+To run it:
+
+```
+sbatch scramble.sh
+```
+
+We obtained a VCF file with the following information:
+
+```
+> CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+> chr16	81990619	INS:ME	A	<INS:ME:ALU>	52.9846420288086	PASS	MEINFO=chr16:81990619_ALU_Plus,81990619,81990620,+
+```
+
+Some errors that we found while trying to run the SCRAMble tool and how to solve them:
+
 ![SCRAMble troubleshooting](./Images/scramble_error.png)
 
-* `file_format.py` program
+Now, as we mentioned in the paper, we had some troubles annotating the results of SCRAMble so now we will explain what we used in order to overcome this problem we followed the showed pipeline:
+
+![annotation scramble](./Images/annotation_scramble.png)
 
 * `vcftotsv.sh` program
 
+These bash scripts are made to convert VCF files to TSV files using the vcf2tsvpy utility. Based on the sample identifier, it specifies the directories for the intended output TSV file and the input VCF file for each iteration. 
+
+* `file_format.py` program
+
+The function defined by this Python script takes each input TSV file that comes from the SCRAMble results and modifies it before writing the updated version to an output TSV file that has extra annotation fields. The function parses the tab-separated columns on each line of the input file as iterates through it. This enables us to obtain the relevant data and then utilize our exons distance program without relying on AnnotSV results.
+
+This program is our first try to overcome the problem, that's why is not included in the pipeline:
+
 * `partition.py` program
+
+Using the line number from the source VCF file as an identifier, this Python software divides an input VCF file into separate VCF files. Each of these files has one structural variant entry. The header lines from the input file are kept, and each output file has the matching SV item appended to it. This was an attempt to try and lower the amount of information per file so that the annotation could be performed appropriately. We also tried to do it with by chromosome number, by strand, and by mobile element type. Nevertheless, the files were still too large to use AnnotSV, hence this strategy was unsuccessful.
 
 ### Only in mobster:
 
@@ -104,7 +159,7 @@ And the ones that are not common between them:
 
 ## long_reads folder content:
 
-The programs used in this folder are already mentioned previously. But one program is meant only the long read detection.
+The programs used in this folder are already mentioned previously, but one program is meant only the long read detection.
 
 * `rMETL.sh` program
 
@@ -121,9 +176,13 @@ The programs used in this folder are already mentioned previously. But one progr
 
 * `distance_no_annotsv.py` program
 
+Works the same way as the one with the annotations of AnnotSV but this time it does not need them, these for the SCRAMble results. Also can be took as a reference of how to incluide or not include information in the distance program.
+
 ## genes content:
 
-It contains the genes.py program, which tell if the list of genes (AID,CVID and IEI)
+It contains the genes.py program, which tell if the list of genes (AID,CVID and IEI).
+
+* `genes.py` program
 
 ## de_novo content:
 
@@ -134,3 +193,5 @@ It contains the genes.py program, which tell if the list of genes (AID,CVID and 
 ## Data_visualization content:
 
 * `Final_results.Rmd` program
+
+Contains all the commands used in R to obtain all the graphical visualizations observed in our project.
