@@ -22,8 +22,7 @@ sbatch copy_file.sh
 
 * `annotsv.sh` program
 
-These are bash scripts made with the purpose of using AnnotSV to annotate structural variations in VCF files. It loops through several VCF files and loads the required modules. The required modules are already specified, the parameters that can be modified are the annotation directory (**-annotationsDir**), if you have AnnotSV somewhere else, the output directory (**-outputDir**), if you want the output be in another directory, the input file (**-SVinputFile**) and the reference genome (**-genomeBuild**) if you are working with **GRCh38** or **GRCh37**. 
-
+The script that is offered makes use of AnnotSV, a program that is used to annotate structural variants that are found in VCF files. AnnotSV provides thorough annotations for SVs, including details on genes, functional impact, population frequency, and more by integrating many annotation databases. The script already specifies the modules that are required. With the given parameters, genome build (GRCh37 or GRCh38), input VCF file, annotations directory, and output directory—it runs AnnotSV for each sample.
 
 To run it:
 
@@ -31,7 +30,7 @@ To run it:
 sbatch annotsv.sh
 ```
 
-The output looks like this (this is only an example of the header and the first line of the **.annotated.tsv**):
+The output TSV looks like this (this is only an example of the header and the first line of the **.annotated.tsv**):
 
 ```
 > AnnotSV_ID	SV_chrom	SV_start	SV_end	SV_length	SV_type	Samples_ID	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	BQSR_S1	Annotation_mode	Gene_name	Gene_count	Tx	Tx_start	Tx_end	Overlapped_tx_length	Overlapped_CDS_length	Overlapped_CDS_percent	Frameshift	Exon_count	Location	Location2	Dist_nearest_SS	Nearest_SS_type	Intersect_start	Intersect_end	RE_gene	P_gain_phen	P_gain_hpo	P_gain_source	P_gain_coord	P_loss_phen	P_loss_hpo	P_loss_source	P_loss_coord	P_ins_phen	P_ins_hpo	P_ins_source	P_ins_coord	P_snvindel_nb	P_snvindel_phen	B_gain_source	B_gain_coord	B_loss_source	B_loss_coord	B_ins_source	B_ins_coord	B_inv_source	B_inv_coord	TAD_coordinate	ENCODE_experiment	GC_content_left	GC_content_right	Repeat_coord_left	Repeat_type_left	Repeat_coord_right	Repeat_type_right	Gap_left	Gap_right	SegDup_left	SegDup_right	ENCODE_blacklist_left	ENCODE_blacklist_characteristics_left	ENCODE_blacklist_right	ENCODE_blacklist_characteristics_right	ACMG	HI	TS	DDD_HI_percent	ExAC_delZ	ExAC_dupZ	ExAC_cnvZ	ExAC_synZ	ExAC_misZ	OMIM_ID	OMIM_phenotype	OMIM_inheritance	OMIM_morbid	OMIM_morbid_candidate	LOEUF_bin	GnomAD_pLI	ExAC_pLI	AnnotSV_ranking_score	AnnotSV_ranking_criteria	ACMG_class
@@ -47,7 +46,7 @@ TSV files produced by the tool and the AnnotSV run are processed by this python 
 python3 elements.py
 ```
 
-The output file looks like this:
+The output CSV file looks like this:
 
 ```
 > Sample,Type,Info,Gene_name,Location,Filter,Start,End,Chromosome,Coverage,Genotype
@@ -141,9 +140,35 @@ Now, as we mentioned in the paper, we had some troubles annotating the results o
 
 These bash scripts are made to convert VCF files to TSV files using the vcf2tsvpy utility. Based on the sample identifier, it specifies the directories for the intended output TSV file and the input VCF file for each iteration. 
 
+To run it:
+
+```
+sbatch vcftotsv.sh
+```
+
+We obtained a TSV file with the following information:
+
+```
+> CHROM	POS	ID	REF	ALT	QUAL	FILTER	END	MEINFO	SVLEN	SVTYPE
+> chr16	81990619	INS:ME	A	<INS:ME:ALU>	52.98	PASS	.	chr16:81990619_ALU_Plus,81990619,81990620,+	.	.
+```
+
 * `file_format.py` program
 
 The function defined by this Python script takes each input TSV file that comes from the SCRAMble results and modifies it before writing the updated version to an output TSV file that has extra annotation fields. The function parses the tab-separated columns on each line of the input file as iterates through it. This enables us to obtain the relevant data and then utilize our exons distance program without relying on AnnotSV results.
+
+To run it:
+
+```
+python3 file_format.py
+```
+
+We obtained a TSV file with the following information:
+
+```
+> CHROM	POS	ID	REF	ALT	QUAL	FILTER	END	MEINFO	SVLEN	SVTYPE	START	END
+> chr16	81990619	INS:ME	A	<INS:ME:ALU>	52.98	PASS	81990620	chr16:81990619_ALU_Plus,81990619,81990620,+	.	.	81990619	81990620
+```
 
 This program is our first try to overcome the problem, that's why is not included in the pipeline:
 
@@ -155,7 +180,35 @@ Using the line number from the source VCF file as an identifier, this Python sof
 
 * `mobster.sh` program
 
+The scripts are meant to run Mobster, which uses a probabilistic method to find MEIs and uses paired-end read properties to find insertions. It specifies the paths to the matching BAM file, sample output directory, and final results directory for every sample. The BAM input file, sample name, and output directory are among the parameters that the script uses to run Mobster. Java is necessary for Mobster to function, and the -Xmx8G parameter specifies an 8GB memory allocation. It also uses a settings file (Mobster.properties) to set its parameters and behavior based on whether Hg19 (the default) or Hg38 is being used. 
+
+To run it:
+
+```
+sbatch mobster.sh
+```
+
+We obtained a TXT file with the following information:
+
+```
+> Chr	Mobile Element	Insert Point	border5	border3	merged	sample	sample_counts	cluster5 length	cluster3 length	cluster5 hits	cluster3 hits	split5 hits	split3 hits	polyA5 hits	polyT5 hits	polyA3 hits	polyT3 hits	original discordant unique	original multiple	original unmapped	leftclipped max dist	rightclipped max dist	leftclipped same pos	rightclipped same pos	clipped avg qual	clipped avg length	target site duplication
+> chr1	ALU	1647758	1647742	1647775	false	/scratch/lab_genresearch/ahirata/ahirata/mobster_results/BQSR/BQSR_S1/Results/Sample_S1	/scratch/lab_genresearch/ahirata/ahirata/mobster_results/BQSR/BQSR_S1/Results/Sample_S1=20	53	145	1	19	0	0	0	0	0	0	0	20	0	-1	-1	-1	-1	-1	-1	unknown
+```
+
 * `convert_vcf.sh` program
+
+To run it:
+
+```
+sbatch convert_vcf.sh
+```
+
+We obtained a VCF file with the following information:
+
+```
+> CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+> chr1	1647759	.	.	<INS:ME:ALU>	.	PASS	IMPRECISE;SAMPS=/scratch/lab_genresearch/ahirata/ahirata/mobster_results/BQSR/BQSR_S1/Results/Sample_S1:20;CIPOS=1647742,1647775;SUP=1,19,0,0;POLYA=0;TSD=unknown;CLLEN=53,145;ORIGIN=0,20,0;CLIPPED=-1,-1,-1,-1,-1.00,-1.00
+```
 
 ## long_reads folder content:
 
