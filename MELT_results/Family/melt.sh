@@ -19,7 +19,7 @@ do
     if [ $i -eq 41 ] || [ $i -eq 54 ] || [ $i -eq 55 ]; then
         export DIRECTORY="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/Family/AY49"$i;
         export DIRECTORY2="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/Family/AY49"$i"/Results_"$TYPE;
-        java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/AY49"$i".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME
+        java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/AY49"$i".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME -exome true
     fi
 done
 

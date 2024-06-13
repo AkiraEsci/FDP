@@ -25,6 +25,6 @@ do
     do  
         export DIRECTORY="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/WES_ME/"${pattern}${range};
         export DIRECTORY2="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/WES_ME/"${pattern}${range}"/Results_"$TYPE;
-        java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/"${pattern}${range}".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME
+        java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/"${pattern}${range}".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME -exome true
     done
 done

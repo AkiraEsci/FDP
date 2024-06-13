@@ -18,5 +18,5 @@ for ((i=1;i<=45;i++))
 do
     export DIRECTORY="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/BQSR/BQSR_S"$i;
     export DIRECTORY2="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/BQSR/BQSR_S"$i"/Results_"$TYPE;
-    java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/BQSR_S"$i".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME
+    java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/BQSR_S"$i".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME -exome true
 done

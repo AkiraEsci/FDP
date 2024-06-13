@@ -22,5 +22,5 @@ do
     fi
     export DIRECTORY="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/fmf_bams/AY48"$i;
     export DIRECTORY2="/gpfs42/projects/lab_genresearch/shared_data/ahirata/MELT_results/fmf_bams/AY48"$i"/Results_"$TYPE;
-    java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/AY48"$i".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME
+    java -jar $EBROOTMELT/MELT.jar Single -bamfile $DIRECTORY"/AY48"$i".bam" -h $GENOME -w $DIRECTORY2 -n $BED -t $ME -exome true
 done
