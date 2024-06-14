@@ -235,9 +235,6 @@ We obtained a VCF file with the following information:
 > chr1	12798634	0	A	<INS:ME:Alu>	.	PASS	PRECISE;SVTYPE=INS;SVLEN=325;END=12798958;SAMPLE=None;STRAND=+	GT:DV:DR	1/1:7:1
 ```
 
-## RNA_seq content:
-
-
 ## exons content:
 
 * `format.py` program
