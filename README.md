@@ -348,15 +348,15 @@ To run it:
 python3 de_novo.py
 ```
 
-An example of the output CSV file:
-
-```
-
-```
-
 * `VH_format.py` program
 
 This program was meant to add a new column to the WES Vall d'Hebron, vice versa, in order to termine the tag from one to each other to perform the comparisons WES-WGS.
+
+To run it:
+
+```
+python3 VH_format.py
+```
 
 ## Data_visualization content:
 
