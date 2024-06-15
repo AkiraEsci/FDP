@@ -240,7 +240,7 @@ We obtained a VCF file with the following information:
 * `format.py` program
 
 The script works by parsing a file that contains the exons from the defined reference genome from the UCSC browser, reformatting the exon information, and writing it to a new file.
-The script divides the input file's lines into tab-delimited columns by iterating over each line. After being retrieved, the exon start and end positions are converted to integers and empty values are filtered out. Furthermore, the gene symbol is obtained. The script creates a new line for each exon entry that has the original columns, the exon identifier, the gene symbol, and the reformatted exon start and end positions. This is done in order to preserve the data for every exon that encodes a single gene.
+The script divides the input file's lines into tab-delimited columns by iterating over each line. After being retrieved, the exon start and end positions are converted to integers and empty values are filtered out. Furthermore, the gene symbol is obtained. The script creates a new line for each exon entry that has the original columns, the exon identifier, the gene symbol, and the reformatted exon start and end positions. This is done to preserve the data for every exon that encodes a single gene.
 
 From:
 
@@ -291,7 +291,7 @@ An example of the output CSV file:
 
 * `distance_no_annotsv.py` program
 
-Works the same way as the one with the annotations of AnnotSV but this time it does not need them, these for the SCRAMble results. Also can be took as a reference of how to incluide or not include information in the distance program.
+Works the same way as the one with the annotations of AnnotSV but this time it does not need them, these are for the SCRAMble results. Also can be taken as a reference for how to include or not include information in the distance program.
 
 ## genes content:
 
@@ -327,7 +327,7 @@ An example of the output CSV file:
 
 * `ME_per_data.py` program
 
-In order to plot the amount of mobile elements per dataset we used to program to determine that information.
+To plot the amount of mobile elements per dataset we used to program to determine that information.
 
 To run it:
 
@@ -350,7 +350,7 @@ python3 de_novo.py
 
 * `VH_format.py` program
 
-This program was meant to add a new column to the WES Vall d'Hebron, vice versa, in order to termine the tag from one to each other to perform the comparisons WES-WGS.
+This program was meant to add a new column to the WES Vall d'Hebron, vice versa, to termine the tag from one to each other to perform the comparisons WES-WGS.
 
 To run it:
 
@@ -360,6 +360,6 @@ python3 VH_format.py
 
 ## Data_visualization content:
 
-* `Final_results.Rmd` program
+* `Final_Results.Rmd` program
 
 Contains all the commands used in R to obtain all the graphical visualizations observed in our project.
