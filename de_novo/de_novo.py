@@ -5,7 +5,7 @@ def check_gene_expression(data):
 
     complete_families = set()
     for row in data:
-        sample = row[9]
+        sample = row[11]
         family_key = sample[:4]
         if sample.endswith(('f', 'm', 'i')):
             complete_families.add(family_key)
@@ -16,7 +16,7 @@ def check_gene_expression(data):
         individual_genes = set()
 
         for row in data:
-            sample = row[9]
+            sample = row[11]
             gene_name = row[6]
             if sample.startswith(family_key):
                 if sample.endswith('f'):
@@ -34,9 +34,9 @@ def check_gene_expression(data):
 
     return results
 
-def main():
-    input_file = '/home/akira-hirata/Comparisons/de_novo/exp_obs_gene_VHWES_mobster_formated.csv'
-    output_file = '/home/akira-hirata/Comparisons/de_novo/de_novo_VHWES_mobster.csv'
+for i in ["melt","scramble","mobster"]:
+    input_file = f'/gpfs42/projects/lab_genresearch/shared_data/ahirata/Results/exp_obs_gene_VHWES_{i}_formated.csv'
+    output_file = f'de_novo_VHWES_{i}.csv'
 
     with open(input_file, 'r') as csvfile:
         reader = csv.reader(csvfile)
@@ -51,6 +51,3 @@ def main():
         writer.writerows(results)
 
     print(f"Results written to {output_file}")
-
-if __name__ == "__main__":
-    main()
