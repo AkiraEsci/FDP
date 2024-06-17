@@ -1,6 +1,6 @@
 # Performance evaluation of bioinformatics tools for Transposable Element detection from NGS data
 
-In this project, three Transposable Element Detection tools are compared using different sequencing datasets, such as, Whole Exome Sequencing (**WES**), Whole Genome Sequencing (**WGS**), RNA sequencing (**RNAseq**) and long-read sequencing. Transposable elements, sometimes referred to as mobile elements, are DNA sequences that have the ability to shift positions within the genome by using a retrotranscription mechanism, perhaps leading to mutations and changing the structure and function of the genome. 
+In this project, three Transposable Element Detection tools are compared using different sequencing datasets, such as, Whole Exome Sequencing (**WES**), Whole Genome Sequencing (**WGS**), and long-read sequencing. Transposable elements, sometimes referred to as mobile elements, are DNA sequences that have the ability to shift positions within the genome by using a retrotranscription mechanism, perhaps leading to mutations and changing the structure and function of the genome. 
 
 ![reverse transcription](./Images/reverse_transcription.jpg)
 
